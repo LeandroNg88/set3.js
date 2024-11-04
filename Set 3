@@ -1,0 +1,164 @@
+/**
+ * Set 3
+ *
+ * This assignment will develop your ability to manipulate data.
+ * You should be ready for JS tutorials on more advanced topics after this.
+ *
+ * Please refer to the `module4/sample-data/set3-sample-data.js` file for examples of:
+ * - the `socialGraph` parameter for `relationshipStatus`
+ * - the `board` parameter for `ticTacToe`
+ * - the `routeMap` parameter for `eta`
+ */
+
+/**
+ * Relationship status
+ *
+ * Let's pretend that you are building a new app with social media functionality.
+ * Users can have relationships with other users.
+ *
+ * The two guidelines for describing relationships are:
+ * 1. Any user can follow any other user.
+ * 2. If two users follow each other, they are considered friends.
+ *
+ * This function describes the relationship that two users have with each other.
+ *
+ * Please see the sample data for examples of `socialGraph`.
+ *
+ * @param {string} fromMember The subject member
+ * @param {string} toMember The object member
+ * @param {object} socialGraph The relationship data
+ * @returns {string} "follower" if fromMember follows toMember;
+ * "followed by" if fromMember is followed by toMember;
+ * "friends" if fromMember and toMember follow each other;
+ * "no relationship" otherwise.
+ */
+
+function relationshipStatus(fromMember, toMember, socialGraph) {
+
+        if (!socialGraph[fromMember]) {
+            return "no relationship";
+        }
+        let fromFollows = socialGraph[fromMember].following.includes(toMember);
+        let toFollows = socialGraph[toMember]?.following.includes(fromMember);
+    
+        if (fromFollows && toFollows) {
+            return "friends";
+        } else if (fromFollows) {
+            return "follower";
+        } else if (toFollows) {
+            return "followed by";
+        } else {
+            return "no relationship";
+        }
+    }
+
+    
+
+    
+/**
+ * Tic tac toe
+ *
+ * Tic Tac Toe is a common paper-and-pencil game.
+ * Players must attempt to draw a line of their symbol across a grid.
+ * The player that does this first is considered the winner.
+ *
+ * This function evaluates a Tic Tac Toe game board and returns the winner.
+ *
+ * Please see the sample data for examples of `board`.
+ *
+ * @param {Array} board The representation of the Tic Tac Toe board as a square array of arrays. The size of the array will range between 3x3 to 6x6.
+ * The board will never have more than 1 winner.
+ * There will only ever be 2 unique symbols at the same time.
+ * @returns {string} the symbol of the winner, or "NO WINNER" if there is no winner.
+ */
+
+function ticTacToe(board) {
+    
+    // Checking of rows
+    for (let row of board) {
+        if (row[0] !== '' && row.every(cell => cell === row[0])) {
+            return row[0];
+        }
+    }
+    
+    // Checking of columns
+    for (let col = 0; col < board[0].length; col++) {
+        if (board[0][col] !== '' && board.every(row => row[col] === board[0][col])) {
+            return board[0][col];
+        }
+    }
+    
+    // Checking of main diagonal 1 (top-left to bottom-right)
+    if (board[0][0] !== '' && board.every((row, index) => row[index] === board[0][0])) {
+        return board[0][0];
+    }
+    
+    // Checking of diagonal 2 (top-right to bottom-left)
+    let lastCol = board[0].length - 1;
+    if (board[0][lastCol] !== '' && board.every((row, index) => row[lastCol - index] === board[0][lastCol])) {
+        return board[0][lastCol];
+    }
+    
+    return "NO WINNER";
+}
+
+
+
+
+
+/**
+ * ETA
+ *
+ * A shuttle van service is tasked to travel one way along a predefined circular route.
+ * The route is divided into several legs between stops.
+ * The route is fully connected to itself.
+ *
+ * This function returns how long it will take the shuttle to arrive at a stop after leaving anothe rstop.
+ *
+ * Please see the sample data for examples of `routeMap`.
+ *
+ * @param {string} firstStop the stop that the shuttle will leave
+ * @param {string} secondStop the stop that the shuttle will arrive at
+ * @param {object} routeMap the data describing the routes
+ * @returns {Number} the time that it will take the shuttle to travel from firstStop to secondStop
+ */
+
+function eta(firstStop, secondStop, routeMap) {
+ 
+    // List of stops based on routeMap keys
+    let stops = []; 
+    for (let route in routeMap) {
+        let stop = route.split(',')[0]; // Get the starting stop of each route
+        stops.push(stop);
+    }
+    
+    // Add the first stop again to the end to make it circular
+    stops.push(stops[0]);
+
+    let time = 0; // Variable to keep track of the travel time
+    let currentStop = firstStop; // Start at the first stop
+
+    // Loop until we reach the second stop
+    while (currentStop !== secondStop) {
+        // Find the next stop by checking the next one in the stops array
+        let currentIndex = stops.indexOf(currentStop);
+        let nextStop = stops[currentIndex + 1]; // Move to the next stop
+
+        // Create a "leg" key to look up travel time in routeMap
+        let leg = `${currentStop},${nextStop}`;
+
+        // Add the travel time for this leg
+        time += routeMap[leg].travel_time_mins;
+
+        // Move to the next stop
+        currentStop = nextStop;
+    }
+    
+    return time; // Return the total travel time
+}
+
+
+
+
+
+
